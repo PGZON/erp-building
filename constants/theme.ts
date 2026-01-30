@@ -1,53 +1,92 @@
 /**
- * Below are the colors that are used in the app. The colors are defined in the light and dark mode.
- * There are many other ways to style your app. For example, [Nativewind](https://www.nativewind.dev/), [Tamagui](https://tamagui.dev/), [unistyles](https://reactnativeunistyles.vercel.app), etc.
+ * Professional Construction Management Theme
+ * Palette: Deep Navy & Slate with Clean Whites
  */
 
-import { Platform } from 'react-native';
 
-const tintColorLight = '#0a7ea4';
-const tintColorDark = '#fff';
+const palette = {
+  primary: '#0F172A', // Slate 900 - Deep, professional
+  primaryLight: '#334155', // Slate 700
+  accent: '#2563EB', // Royal Blue - Actionable
+  success: '#10B981', // Emerald - Positive values
+  warning: '#F59E0B', // Amber - Alerts
+  danger: '#EF4444', // Red - Expenses/Delete
+
+  background: '#F8FAFC', // Slate 50 - Very subtle off-white
+  surface: '#FFFFFF',
+  surfaceHighlight: '#F1F5F9', // Slate 100
+
+  textPrimary: '#0F172A', // Slate 900
+  textSecondary: '#64748B', // Slate 500
+  textTertiary: '#94A3B8', // Slate 400
+  textInverse: '#FFFFFF',
+
+  border: '#E2E8F0', // Slate 200
+};
 
 export const Colors = {
   light: {
-    text: '#11181C',
-    background: '#fff',
-    tint: tintColorLight,
-    icon: '#687076',
-    tabIconDefault: '#687076',
-    tabIconSelected: tintColorLight,
+    text: palette.textPrimary,
+    textSecondary: palette.textSecondary,
+    background: palette.background,
+    surface: palette.surface,
+    tint: palette.accent,
+    icon: palette.textSecondary,
+    tabIconDefault: palette.textTertiary,
+    tabIconSelected: palette.primary,
+    border: palette.border,
+    error: palette.danger,
+    primary: palette.primary,
   },
   dark: {
-    text: '#ECEDEE',
-    background: '#151718',
-    tint: tintColorDark,
-    icon: '#9BA1A6',
-    tabIconDefault: '#9BA1A6',
-    tabIconSelected: tintColorDark,
+    // For now, mapping dark directly to light or defining properly if user wants dark mode
+    // The prompt asked for "Professional Clean", often implies a high-contrast light theme for business apps.
+    // I will keep a safe dark fallback but focus on the light theme primarily as requested "clean elegant"
+    text: '#F8FAFC',
+    textSecondary: '#94A3B8',
+    background: '#0F172A',
+    surface: '#1E293B',
+    tint: '#38BDF8',
+    icon: '#94A3B8',
+    tabIconDefault: '#64748B',
+    tabIconSelected: '#F8FAFC',
+    border: '#334155',
+    error: '#F87171',
+    primary: '#F8FAFC',
   },
+  palette,
 };
 
-export const Fonts = Platform.select({
-  ios: {
-    /** iOS `UIFontDescriptorSystemDesignDefault` */
-    sans: 'system-ui',
-    /** iOS `UIFontDescriptorSystemDesignSerif` */
-    serif: 'ui-serif',
-    /** iOS `UIFontDescriptorSystemDesignRounded` */
-    rounded: 'ui-rounded',
-    /** iOS `UIFontDescriptorSystemDesignMonospaced` */
-    mono: 'ui-monospace',
+export const Spacing = {
+  xs: 4,
+  s: 8,
+  m: 16,
+  l: 24,
+  xl: 32,
+  xxl: 48,
+};
+
+export const BorderRadius = {
+  s: 8,
+  m: 12,
+  l: 16,
+  xl: 24,
+  pill: 999,
+};
+
+export const Shadows = {
+  soft: {
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
-  default: {
-    sans: 'normal',
-    serif: 'serif',
-    rounded: 'normal',
-    mono: 'monospace',
+  medium: {
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 4,
   },
-  web: {
-    sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
-    serif: "Georgia, 'Times New Roman', serif",
-    rounded: "'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif",
-    mono: "SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace",
-  },
-});
+};
