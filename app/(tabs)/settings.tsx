@@ -3,7 +3,7 @@ import { useAuth } from '@/context/AuthContext';
 import { api } from '@/convex/_generated/api';
 import { Ionicons } from '@expo/vector-icons';
 import { useQuery } from 'convex/react';
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import { useRouter } from 'expo-router';
 import * as Sharing from 'expo-sharing';
 import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';

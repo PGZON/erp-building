@@ -13,41 +13,46 @@ export default function ExpensesScreen() {
     const { user } = useAuth();
     const canAdd = user?.role === 'owner' || user?.role === 'editor';
 
-    const renderItem = ({ item }: { item: any }) => (
-        <TouchableOpacity style={styles.card} activeOpacity={0.7} onPress={() => router.push(`/expenses/${item._id}`)}>
-            <View style={styles.cardHeader}>
-                <View style={styles.dateContainer}>
-                    <Ionicons name="calendar-outline" size={14} color={Colors.palette.textTertiary} />
-                    <Text style={styles.date}>{new Date(item.date).toLocaleDateString()}</Text>
-                </View>
-                <Text style={styles.amount}>- ₹ {item.amount.toFixed(2)}</Text>
-            </View>
+    const renderItem = ({ item }: { item: any }) => {
+        // @ts-ignore - Dynamic color mapping
+        const catColor = Colors.palette.categories[item.category.toLowerCase()] || Colors.palette.categories.other;
 
-            <View style={styles.cardBody}>
-                <Text style={styles.title}>{item.title}</Text>
-                <View style={styles.badgeRow}>
-                    <View style={styles.categoryBadge}>
-                        <Text style={styles.categoryText}>{item.category}</Text>
+        return (
+            <TouchableOpacity style={styles.card} activeOpacity={0.7} onPress={() => router.push(`/expenses/${item._id}`)}>
+                <View style={styles.cardHeader}>
+                    <View style={styles.dateContainer}>
+                        <Ionicons name="calendar-outline" size={14} color={Colors.palette.textTertiary} />
+                        <Text style={styles.date}>{new Date(item.date).toLocaleDateString()}</Text>
                     </View>
-                    {item.billStorageId && (
-                        <View style={styles.attachmentBadge}>
-                            <Ionicons name="attach" size={12} color={Colors.palette.accent} />
-                            <Text style={styles.attachmentText}>Receipt</Text>
+                    <Text style={styles.amount}>- ₹ {item.amount.toFixed(2)}</Text>
+                </View>
+
+                <View style={styles.cardBody}>
+                    <Text style={styles.title}>{item.title}</Text>
+                    <View style={styles.badgeRow}>
+                        <View style={[styles.categoryBadge, { backgroundColor: catColor + '15' }]}>
+                            <Text style={[styles.categoryText, { color: catColor }]}>{item.category}</Text>
                         </View>
-                    )}
-                </View>
-            </View>
-
-            <View style={styles.cardFooter}>
-                <View style={styles.meta}>
-                    <View style={styles.avatarSmall}>
-                        <Text style={styles.avatarText}>{item.creatorName?.charAt(0)}</Text>
+                        {item.billStorageId && (
+                            <View style={styles.attachmentBadge}>
+                                <Ionicons name="attach" size={12} color={Colors.palette.primary} />
+                                <Text style={styles.attachmentText}>Receipt</Text>
+                            </View>
+                        )}
                     </View>
-                    <Text style={styles.metaText}>Paid by <Text style={{ fontWeight: '600' }}>{item.paidBy}</Text></Text>
                 </View>
-            </View>
-        </TouchableOpacity>
-    );
+
+                <View style={styles.cardFooter}>
+                    <View style={styles.meta}>
+                        <View style={styles.avatarSmall}>
+                            <Text style={styles.avatarText}>{item.creatorName?.charAt(0)}</Text>
+                        </View>
+                        <Text style={styles.metaText}>Paid by <Text style={{ fontWeight: '600' }}>{item.paidBy}</Text></Text>
+                    </View>
+                </View>
+            </TouchableOpacity>
+        );
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -158,27 +163,27 @@ const styles = StyleSheet.create({
         gap: Spacing.s,
     },
     categoryBadge: {
-        backgroundColor: Colors.palette.surfaceHighlight,
         paddingHorizontal: Spacing.s,
         paddingVertical: 4,
         borderRadius: BorderRadius.s,
+        borderWidth: 1,
+        borderColor: 'rgba(0,0,0,0.05)',
     },
     categoryText: {
-        color: Colors.palette.textSecondary,
         fontSize: 12,
-        fontWeight: '500',
+        fontWeight: '600',
     },
     attachmentBadge: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#EFF6FF', // Light Blue
+        backgroundColor: Colors.palette.primaryLight,
         paddingHorizontal: Spacing.s,
         paddingVertical: 4,
         borderRadius: BorderRadius.s,
         gap: 2,
     },
     attachmentText: {
-        color: Colors.palette.accent,
+        color: Colors.palette.primary,
         fontSize: 12,
         fontWeight: '500',
     },
@@ -195,10 +200,10 @@ const styles = StyleSheet.create({
         gap: Spacing.s,
     },
     avatarSmall: {
-        width: 20,
-        height: 20,
-        borderRadius: 10,
-        backgroundColor: Colors.palette.primaryLight,
+        width: 24,
+        height: 24,
+        borderRadius: 12,
+        backgroundColor: Colors.palette.primary,
         justifyContent: 'center',
         alignItems: 'center',
     },

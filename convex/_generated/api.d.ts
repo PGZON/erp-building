@@ -11,6 +11,7 @@
 import type * as auth from "../auth.js";
 import type * as expenses from "../expenses.js";
 import type * as materials from "../materials.js";
+import type * as notes from "../notes.js";
 import type * as seed from "../seed.js";
 import type * as stats from "../stats.js";
 import type * as utils from "../utils.js";
@@ -26,6 +27,7 @@ declare const fullApi: ApiFromModules<{
   auth: typeof auth;
   expenses: typeof expenses;
   materials: typeof materials;
+  notes: typeof notes;
   seed: typeof seed;
   stats: typeof stats;
   utils: typeof utils;

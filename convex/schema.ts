@@ -69,6 +69,13 @@ export default defineSchema({
         .index("by_expense", ["expenseId"])
         .index("by_vendor", ["vendorId"]),
 
+    notes: defineTable({
+        content: v.string(),
+        userId: v.id("users"),
+        createdAt: v.number(),
+        isDeleted: v.optional(v.boolean()),
+    }).index("by_user", ["userId"]),
+
     audit_logs: defineTable({
         action: v.string(),
         entity: v.string(),

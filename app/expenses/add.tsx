@@ -20,6 +20,7 @@ export default function AddExpenseScreen() {
     const [amount, setAmount] = useState('');
     const [paidBy, setPaidBy] = useState('');
     const [category, setCategory] = useState<'Material' | 'Labor' | 'Transport' | 'Other'>('Material');
+    const [otherCategoryDesc, setOtherCategoryDesc] = useState('');
     const [notes, setNotes] = useState('');
     const [images, setImages] = useState<string[]>([]);
     const [loading, setLoading] = useState(false);
@@ -69,13 +70,18 @@ export default function AddExpenseScreen() {
                 }
             }
 
+            // Append explicit other category to notes if present
+            const finalNotes = category === 'Other' && otherCategoryDesc
+                ? `[Category Spec: ${otherCategoryDesc}] ${notes}`
+                : notes;
+
             await createExpense({
                 title,
                 amount: parseFloat(amount),
                 category,
                 date: Date.now(),
                 paidBy,
-                notes,
+                notes: finalNotes,
                 billStorageId: storageIds.length > 0 ? (storageIds as any) : undefined,
                 userId: user!._id,
             });
@@ -137,6 +143,16 @@ export default function AddExpenseScreen() {
                             </TouchableOpacity>
                         ))}
                     </View>
+
+                    {category === 'Other' && (
+                        <TextInput
+                            style={[styles.input, { marginTop: Spacing.s }]}
+                            value={otherCategoryDesc}
+                            onChangeText={setOtherCategoryDesc}
+                            placeholder="Specify Other Category..."
+                            placeholderTextColor={Colors.palette.textTertiary}
+                        />
+                    )}
                 </View>
 
                 <View style={styles.inputGroup}>
@@ -311,7 +327,7 @@ const styles = StyleSheet.create({
         width: 40,
         height: 40,
         borderRadius: 20,
-        backgroundColor: '#E0E7FF',
+        backgroundColor: Colors.palette.primaryLight,
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: Spacing.s,

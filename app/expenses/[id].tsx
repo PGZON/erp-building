@@ -4,14 +4,19 @@ import { api } from '@/convex/_generated/api';
 import { Id } from '@/convex/_generated/dataModel';
 import { Ionicons } from '@expo/vector-icons';
 import { useMutation, useQuery } from 'convex/react';
+import * as FileSystem from 'expo-file-system/legacy';
 import { useLocalSearchParams, useRouter } from 'expo-router';
-import { ActivityIndicator, Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import * as Sharing from 'expo-sharing';
+import { useState } from 'react';
+import { ActivityIndicator, Alert, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ExpenseDetailScreen() {
     const { id } = useLocalSearchParams();
     const router = useRouter();
     const { user } = useAuth();
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [downloading, setDownloading] = useState(false);
 
     // We fetch the expense using the new getExpense query
     // The query returns null if deleted or not found
@@ -40,6 +45,29 @@ export default function ExpenseDetailScreen() {
                 }
             ]
         );
+    };
+
+    const handleDownload = async (url: string) => {
+        setDownloading(true);
+        try {
+            // Generate a filename
+            const filename = `receipt_${Date.now()}.jpg`;
+            const fileUri = FileSystem.documentDirectory + filename;
+
+            // Download
+            const { uri } = await FileSystem.downloadAsync(url, fileUri);
+
+            // Share/Save
+            if (await Sharing.isAvailableAsync()) {
+                await Sharing.shareAsync(uri);
+            } else {
+                Alert.alert("Downloaded", "File saved to: " + uri);
+            }
+        } catch (e: any) {
+            Alert.alert("Error", "Failed to download receipt: " + e.message);
+        } finally {
+            setDownloading(false);
+        }
     };
 
     if (expense === undefined) {
@@ -139,13 +167,21 @@ export default function ExpenseDetailScreen() {
                     <View style={styles.sectionCard}>
                         <Text style={styles.sectionTitle}>Receipts / Bills ({expense.billUrls.length})</Text>
                         {expense.billUrls.map((url, index) => (
-                            <View key={index} style={styles.imageContainer}>
+                            <TouchableOpacity
+                                key={index}
+                                style={styles.imageContainer}
+                                onPress={() => setSelectedImage(url)}
+                                activeOpacity={0.9}
+                            >
                                 <Image
                                     source={{ uri: url }}
                                     style={styles.billImage}
-                                    resizeMode="contain"
+                                    resizeMode="cover"
                                 />
-                            </View>
+                                <View style={styles.zoomOverlay}>
+                                    <Ionicons name="scan-outline" size={24} color="#fff" />
+                                </View>
+                            </TouchableOpacity>
                         ))}
                     </View>
                 ) : (
@@ -163,6 +199,40 @@ export default function ExpenseDetailScreen() {
                 </View>
 
             </ScrollView>
+
+            {/* Full Screen Image Modal */}
+            <Modal visible={!!selectedImage} transparent={true} animationType="fade">
+                <View style={styles.modalBackground}>
+                    <SafeAreaView style={styles.modalSafeArea}>
+                        <View style={styles.modalHeader}>
+                            <TouchableOpacity onPress={() => setSelectedImage(null)} style={styles.closeButton}>
+                                <Ionicons name="close" size={28} color="#fff" />
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() => selectedImage && handleDownload(selectedImage)}
+                                style={styles.downloadButton}
+                                disabled={downloading}
+                            >
+                                {downloading ? (
+                                    <ActivityIndicator color="#fff" size="small" />
+                                ) : (
+                                    <Ionicons name="download-outline" size={28} color="#fff" />
+                                )}
+                            </TouchableOpacity>
+                        </View>
+
+                        <View style={styles.modalContent}>
+                            {selectedImage && (
+                                <Image
+                                    source={{ uri: selectedImage }}
+                                    style={styles.fullScreenImage}
+                                    resizeMode="contain"
+                                />
+                            )}
+                        </View>
+                    </SafeAreaView>
+                </View>
+            </Modal>
         </SafeAreaView>
     );
 }
@@ -319,5 +389,55 @@ const styles = StyleSheet.create({
         marginTop: Spacing.m,
         fontSize: 16,
         color: Colors.palette.textSecondary,
+    },
+    zoomOverlay: {
+        position: 'absolute',
+        bottom: 8,
+        right: 8,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        width: 36,
+        height: 36,
+        borderRadius: 18,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalBackground: {
+        flex: 1,
+        backgroundColor: '#000',
+    },
+    modalSafeArea: {
+        flex: 1,
+    },
+    modalHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        paddingHorizontal: Spacing.l,
+        paddingTop: Spacing.m,
+        zIndex: 10,
+    },
+    closeButton: {
+        width: 44,
+        height: 44,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 22,
+        backgroundColor: 'rgba(255,255,255,0.2)',
+    },
+    downloadButton: {
+        width: 44,
+        height: 44,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 22,
+        backgroundColor: 'rgba(255,255,255,0.2)',
+    },
+    modalContent: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    fullScreenImage: {
+        width: '100%',
+        height: '100%',
     }
 });

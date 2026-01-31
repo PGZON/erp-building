@@ -71,3 +71,40 @@ export const getRecentActivity = query({
         }));
     }
 });
+
+export const getExpensesByMonth = query({
+    args: { month: v.number(), year: v.number() },
+    handler: async (ctx, args) => {
+        const start = new Date(args.year, args.month, 1).getTime();
+        const end = new Date(args.year, args.month + 1, 0, 23, 59, 59).getTime();
+
+        const expenses = await ctx.db.query("expenses")
+            .filter(q => q.and(q.gte(q.field("date"), start), q.lte(q.field("date"), end)))
+            .collect();
+
+        const activityMap: Record<string, boolean> = {};
+
+        for (const exp of expenses) {
+            const dayStr = new Date(exp.date).toISOString().split('T')[0];
+            activityMap[dayStr] = true;
+        }
+
+        return activityMap;
+    }
+});
+
+export const getExpensesForDay = query({
+    args: { dateString: v.string() },
+    handler: async (ctx, args) => {
+        const start = new Date(args.dateString);
+        start.setHours(0, 0, 0, 0);
+        const end = new Date(args.dateString);
+        end.setHours(23, 59, 59, 999);
+
+        const expenses = await ctx.db.query("expenses")
+            .filter(q => q.and(q.gte(q.field("date"), start.getTime()), q.lte(q.field("date"), end.getTime())))
+            .collect();
+
+        return expenses;
+    }
+});

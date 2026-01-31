@@ -5,23 +5,41 @@
 
 
 const palette = {
-  primary: '#0F172A', // Slate 900 - Deep, professional
-  primaryLight: '#334155', // Slate 700
-  accent: '#2563EB', // Royal Blue - Actionable
-  success: '#10B981', // Emerald - Positive values
-  warning: '#F59E0B', // Amber - Alerts
-  danger: '#EF4444', // Red - Expenses/Delete
+  // Brand Colors - Royal Violet "Premium" feel
+  primary: '#7C3AED', // Violet 600 - Rich, creative, premium
+  primaryDark: '#5B21B6', // Violet 800
+  primaryLight: '#F5F3FF', // Violet 50
 
-  background: '#F8FAFC', // Slate 50 - Very subtle off-white
+  // Secondary / Accents
+  accent: '#D97706', // Amber 600 - Gold/Premium accent
+  secondary: '#10B981', // Emerald 500 - Growth/Money
+
+  // Functional Colors
+  success: '#10B981', // Emerald 500
+  warning: '#F59E0B', // Amber 500
+  danger: '#EF4444', // Red 500
+  info: '#3B82F6',   // Blue 500
+
+  // Neutrals - Clean & Crisp
+  background: '#F8FAFC', // Slate 50
   surface: '#FFFFFF',
   surfaceHighlight: '#F1F5F9', // Slate 100
 
-  textPrimary: '#0F172A', // Slate 900
+  // Text
+  textPrimary: '#1E293B', // Slate 800
   textSecondary: '#64748B', // Slate 500
   textTertiary: '#94A3B8', // Slate 400
   textInverse: '#FFFFFF',
 
   border: '#E2E8F0', // Slate 200
+
+  // Category Specific Colors
+  categories: {
+    material: '#7C3AED', // Violet (Primary)
+    labor: '#D97706',    // Amber (Gold)
+    transport: '#0EA5E9',// Sky
+    other: '#64748B',    // Slate
+  }
 };
 
 export const Colors = {
